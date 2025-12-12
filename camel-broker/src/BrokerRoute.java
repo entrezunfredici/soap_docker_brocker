@@ -17,13 +17,13 @@ public class BrokerRoute extends RouteBuilder {
 
             // 2️⃣ Route dynamique selon l’opération SOAP
             .choice()
-                .when(header("operationName").isEqualTo("processPayment"))
+                .when(header("operationName").isEqualTo("processPayment")) // BILLING
                     .log("➡️ Routing vers PaymentService")
                     .to("cxf://http://localhost:8081/ws/payment?serviceClass=com.example.contracts.PaymentPortType")
-                .when(header("operationName").isEqualTo("createShipment"))
+                .when(header("operationName").isEqualTo("createShipment")) // INVENTORY
                     .log("➡️ Routing vers ShippingService")
                     .to("cxf://http://localhost:8082/ws/shipping?serviceClass=com.example.contracts.ShippingPortType")
-                .when(header("operationName").isEqualTo("generateInvoice"))
+                .when(header("operationName").isEqualTo("generateInvoice")) // CUSTOMER
                     .log("➡️ Routing vers InvoiceService")
                     .to("cxf://http://localhost:8083/ws/invoice?serviceClass=com.example.contracts.InvoicePortType")
                 .otherwise()
