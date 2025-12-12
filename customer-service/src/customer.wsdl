@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions 
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:tns="http://example.com/customer"
+    targetNamespace="http://example.com/customer">
+
+    <!-- Types : Définition des structures XML -->
+    <wsdl:types>
+        <xs:schema targetNamespace="http://example.com/customer" elementFormDefault="qualified">
+            
+            <!-- OPERATION 1 : checkStock -->
+            <xs:element name="checkStockRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="productId" type="xs:int"/>
+                        <xs:element name="quantity" type="xs:int"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="checkStockResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="available" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <!-- OPERATION 2 : receiveAvailability -->
+            <xs:element name="receiveAvailabilityRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="available" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="receiveAvailabilityResponse">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="acknowledged" type="xs:boolean"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <!-- OPERATION 3 : createInvoice -->
+            <xs:element name="createInvoiceRequest">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="items" type="tns:invoiceItems"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+
+            <xs:element name="createInvoiceResponse">
+                <xs:complexType>
+                    <!-- Réponse vide -->
+                </xs:complexType>
+            </xs:element>
+
+            <!-- Types complexes -->
+            <xs:complexType name="invoiceItems">
+                <xs:sequence>
+                    <xs:element name="item" type="tns:invoiceItem" minOccurs="1" maxOccurs="unbounded"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="invoiceItem">
+                <xs:sequence>
+                    <xs:element name="productId" type="xs:int"/>
+                    <xs:element name="quantity" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+
+        </xs:schema>
+    </wsdl:types>
+
+    <!-- Messages -->
+    <wsdl:message name="checkStockRequestMsg">
+        <wsdl:part name="parameters" element="tns:checkStockRequest"/>
+    </wsdl:message>
+    <wsdl:message name="checkStockResponseMsg">
+        <wsdl:part name="parameters" element="tns:checkStockResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="receiveAvailabilityRequestMsg">
+        <wsdl:part name="parameters" element="tns:receiveAvailabilityRequest"/>
+    </wsdl:message>
+    <wsdl:message name="receiveAvailabilityResponseMsg">
+        <wsdl:part name="parameters" element="tns:receiveAvailabilityResponse"/>
+    </wsdl:message>
+
+    <wsdl:message name="createInvoiceRequestMsg">
+        <wsdl:part name="parameters" element="tns:createInvoiceRequest"/>
+    </wsdl:message>
+    <wsdl:message name="createInvoiceResponseMsg">
+        <wsdl:part name="parameters" element="tns:createInvoiceResponse"/>
+    </wsdl:message>
+
+    <!-- Port Type : Les opérations -->
+    <wsdl:portType name="CustomerPortType">
+        <wsdl:operation name="checkStock">
+            <wsdl:input message="tns:checkStockRequestMsg"/>
+            <wsdl:output message="tns:checkStockResponseMsg"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="receiveAvailability">
+            <wsdl:input message="tns:receiveAvailabilityRequestMsg"/>
+            <wsdl:output message="tns:receiveAvailabilityResponseMsg"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="createInvoice">
+            <wsdl:input message="tns:createInvoiceRequestMsg"/>
+            <wsdl:output message="tns:createInvoiceResponseMsg"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <!-- Binding : Liaison SOAP -->
+    <wsdl:binding name="CustomerBinding" type="tns:CustomerPortType">
+        <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+
+        <wsdl:operation name="checkStock">
+            <soap:operation soapAction="checkStock"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="receiveAvailability">
+            <soap:operation soapAction="receiveAvailability"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+
+        <wsdl:operation name="createInvoice">
+            <soap:operation soapAction="createInvoice"/>
+            <wsdl:input>
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <!-- Service : Point d'accès -->
+    <wsdl:service name="CustomerService">
+        <wsdl:port name="CustomerPort" binding="tns:CustomerBinding">
+            <soap:address location="http://localhost:8081/ws/customer"/>
+        </wsdl:port>
+    </wsdl:service>
+
+</wsdl:definitions>

@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://schemas.xmlsoap.org/wsdl/"
+             xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+             xmlns:tns="http://example.com/billing"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+             targetNamespace="http://example.com/billing"
+             name="BillingService">
+
+    <types>
+        <xsd:schema targetNamespace="http://example.com/billing">
+            
+            <!-- Request pour mettre à jour l'inventaire -->
+            <xsd:complexType name="UpdateInventoryRequest">
+                <xsd:sequence>
+                    <xsd:element name="productId" type="xsd:int"/>
+                    <xsd:element name="quantity" type="xsd:int"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            
+            <!-- Response pour mise à jour inventaire -->
+            <xsd:complexType name="UpdateInventoryResponse">
+                <xsd:sequence>
+                    <xsd:element name="success" type="xsd:boolean"/>
+                    <xsd:element name="message" type="xsd:string"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            
+            <!-- Request pour générer une facture -->
+            <xsd:complexType name="GenerateInvoiceRequest">
+                <xsd:sequence>
+                    <xsd:element name="productIds" type="tns:IntArray"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            
+            <!-- Array d'entiers pour la liste d'IDs -->
+            <xsd:complexType name="IntArray">
+                <xsd:sequence>
+                    <xsd:element name="id" type="xsd:int" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            
+            <!-- Response de la facture -->
+            <xsd:complexType name="GenerateInvoiceResponse">
+                <xsd:sequence>
+                    <xsd:element name="invoiceId" type="xsd:string"/>
+                    <xsd:element name="items" type="tns:InvoiceItemArray"/>
+                    <xsd:element name="totalAmount" type="xsd:double"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            
+            <!-- Item de facture -->
+            <xsd:complexType name="InvoiceItem">
+                <xsd:sequence>
+                    <xsd:element name="productId" type="xsd:int"/>
+                    <xsd:element name="productName" type="xsd:string"/>
+                    <xsd:element name="price" type="xsd:double"/>
+                    <xsd:element name="quantity" type="xsd:int"/>
+                    <xsd:element name="subtotal" type="xsd:double"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            
+            <!-- Array d'items de facture -->
+            <xsd:complexType name="InvoiceItemArray">
+                <xsd:sequence>
+                    <xsd:element name="item" type="tns:InvoiceItem" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            
+            <!-- Elements -->
+            <xsd:element name="updateInventoryRequest" type="tns:UpdateInventoryRequest"/>
+            <xsd:element name="updateInventoryResponse" type="tns:UpdateInventoryResponse"/>
+            <xsd:element name="generateInvoiceRequest" type="tns:GenerateInvoiceRequest"/>
+            <xsd:element name="generateInvoiceResponse" type="tns:GenerateInvoiceResponse"/>
+        </xsd:schema>
+    </types>
+
+    <!-- Messages -->
+    <message name="UpdateInventoryRequestMessage">
+        <part name="parameters" element="tns:updateInventoryRequest"/>
+    </message>
+    <message name="UpdateInventoryResponseMessage">
+        <part name="parameters" element="tns:updateInventoryResponse"/>
+    </message>
+    <message name="GenerateInvoiceRequestMessage">
+        <part name="parameters" element="tns:generateInvoiceRequest"/>
+    </message>
+    <message name="GenerateInvoiceResponseMessage">
+        <part name="parameters" element="tns:generateInvoiceResponse"/>
+    </message>
+
+    <!-- Port Type -->
+    <portType name="BillingPortType">
+        <operation name="updateInventory">
+            <input message="tns:UpdateInventoryRequestMessage"/>
+            <output message="tns:UpdateInventoryResponseMessage"/>
+        </operation>
+        <operation name="generateInvoice">
+            <input message="tns:GenerateInvoiceRequestMessage"/>
+            <output message="tns:GenerateInvoiceResponseMessage"/>
+        </operation>
+    </portType>
+
+    <!-- Binding -->
+    <binding name="BillingBinding" type="tns:BillingPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="updateInventory">
+            <soap:operation soapAction="updateInventory"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="generateInvoice">
+            <soap:operation soapAction="generateInvoice"/>
+            <input>
+                <soap:body use="literal"/>
+            </input>
+            <output>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+
+    <!-- Service -->
+    <service name="BillingService">
+        <port name="BillingPort" binding="tns:BillingBinding">
+            <soap:address location="http://localhost:8084/ws/billing"/>
+        </port>
+    </service>
+
+</definitions>

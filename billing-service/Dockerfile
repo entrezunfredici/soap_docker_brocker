@@ -26,7 +26,7 @@ ENV JAVA_OPTS="-Xmx512m -Xms256m"
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD java -cp app.jar org.springframework.boot.loader.JarLauncher || exit 1
+    CMD java -jar app.jar || exit 1
 
 # Start the application
 CMD ["java", "-jar", "app.jar"]

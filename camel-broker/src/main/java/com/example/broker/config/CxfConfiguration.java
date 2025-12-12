@@ -1,6 +1,6 @@
 package com.example.broker.config;
 
-import org.apache.camel.component.cxf.CxfEndpoint;
+import org.apache.cxf.jaxws.JaxWsProxyFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import com.example.contracts.AllServicesPortType;
@@ -8,37 +8,36 @@ import com.example.contracts.AllServicesPortType;
 @Configuration
 public class CxfConfiguration {
 
-    @Bean("brokerService")
-    public CxfEndpoint brokerService() {
-        CxfEndpoint endpoint = new CxfEndpoint();
-        endpoint.setAddress("http://0.0.0.0:8080/soap/broker");
-        endpoint.setServiceClass(AllServicesPortType.class);
-        endpoint.setServiceName("{http://example.com/contracts}AllServices");
-        endpoint.setPortName("{http://example.com/contracts}AllServicesPort");
-        return endpoint;
+    @Bean("brokerServiceProxy")
+    public AllServicesPortType brokerServiceProxy() {
+        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+        factory.setServiceClass(AllServicesPortType.class);
+        factory.setAddress("http://0.0.0.0:8080/soap/broker");
+        return (AllServicesPortType) factory.create();
     }
 
-    @Bean("billingService")
-    public CxfEndpoint billingService() {
-        CxfEndpoint endpoint = new CxfEndpoint();
-        endpoint.setAddress("http://billing-service:8080/soap/payment");
-        endpoint.setServiceClass(AllServicesPortType.class);
-        return endpoint;
+    @Bean("billingServiceProxy")
+    public AllServicesPortType billingServiceProxy() {
+        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+        factory.setServiceClass(AllServicesPortType.class);
+        factory.setAddress("http://billing-service:8080/soap/payment");
+        return (AllServicesPortType) factory.create();
     }
 
-    @Bean("inventoryService")
-    public CxfEndpoint inventoryService() {
-        CxfEndpoint endpoint = new CxfEndpoint();
-        endpoint.setAddress("http://inventory-service:8080/soap/shipping");
-        endpoint.setServiceClass(AllServicesPortType.class);
-        return endpoint;
+    @Bean("inventoryServiceProxy")
+    public AllServicesPortType inventoryServiceProxy() {
+        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+        factory.setServiceClass(AllServicesPortType.class);
+        factory.setAddress("http://inventory-service:8080/soap/shipping");
+        return (AllServicesPortType) factory.create();
     }
 
-    @Bean("customerService")
-    public CxfEndpoint customerService() {
-        CxfEndpoint endpoint = new CxfEndpoint();
-        endpoint.setAddress("http://customer-service:8080/soap/invoice");
-        endpoint.setServiceClass(AllServicesPortType.class);
-        return endpoint;
+    @Bean("customerServiceProxy")
+    public AllServicesPortType customerServiceProxy() {
+        JaxWsProxyFactoryBean factory = new JaxWsProxyFactoryBean();
+        factory.setServiceClass(AllServicesPortType.class);
+        factory.setAddress("http://customer-service:8080/soap/invoice");
+        return (AllServicesPortType) factory.create();
     }
 }
+

@@ -16,13 +16,13 @@ services:
     networks:
       - soap-network
 
-  inventory-service:
-    build: ./inventory-service/
-    container_name: soap_inventory_service
-    ports:
-      - "8082:8080"
-    networks:
-      - soap-network
+  # inventory-service:
+  #   build: ./inventory-service/
+  #   container_name: soap_inventory_service
+  #   ports:
+  #     - "8082:8080"
+  #   networks:
+  #     - soap-network
 
   customer-service:
     build: ./customer-service/
